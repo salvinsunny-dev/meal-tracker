@@ -80,7 +80,17 @@ export async function fetchAppData(): Promise<AppData | null> {
     const res = await fetch(`${API_BASE}/data`);
     if (!res.ok) throw new Error(`GET /api/data returned ${res.status}`);
     const json = await res.json();
-    return json.data as AppData;
+    const raw = json.data as Partial<AppData>;
+
+    // Guarantee all arrays exist even if MongoDB stored an incomplete document
+    const data: AppData = {
+      settings:       raw.settings       ?? { pricePerMeal: 50 },
+      persons:        raw.persons        ?? [],
+      billingCycles:  raw.billingCycles  ?? [],
+      mealRecords:    raw.mealRecords    ?? [],
+      paymentReceipts: raw.paymentReceipts ?? [],
+    };
+    return data;
   } catch (err) {
     console.warn('[trackerStore] fetchAppData failed:', err);
     return null;
