@@ -17,7 +17,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
   // Test mongoose import
   try {
-    require('mongoose');
+    await import('mongoose');
     diagnostics['mongoose'] = 'loaded';
   } catch (e: any) {
     diagnostics['mongoose'] = `ERROR: ${e.message}`;
