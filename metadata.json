@@ -1,0 +1,6 @@
+{
+  "name": "Meal & Payment Tracker",
+  "description": "A personal-use web application for tracking daily meal consumption and individual payment balances per person.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
