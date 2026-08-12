@@ -3,7 +3,7 @@ import type { VercelRequest, VercelResponse } from '@vercel/node';
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   res.setHeader('Access-Control-Allow-Origin', '*');
   
-  const diagnostics = {
+  const diagnostics: any = {
     timestamp: new Date().toISOString(),
     nodeVersion: process.version,
     platform: process.platform,
@@ -15,12 +15,21 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     }
   };
 
-  // Test mongoose import
+  // Test mongoose import and connection
   try {
-    await import('mongoose');
+    const mongoose = await import('mongoose');
     diagnostics['mongoose'] = 'loaded';
+    
+    // Try connecting
+    if (process.env.MONGODB_URI) {
+      await mongoose.default.connect(process.env.MONGODB_URI, { 
+        serverSelectionTimeoutMS: 5000 
+      });
+      diagnostics['mongodbConnection'] = 'SUCCESS';
+      await mongoose.default.disconnect();
+    }
   } catch (e: any) {
-    diagnostics['mongoose'] = `ERROR: ${e.message}`;
+    diagnostics['mongodbConnection'] = `ERROR: ${e.message}`;
   }
 
   return res.status(200).json(diagnostics);
