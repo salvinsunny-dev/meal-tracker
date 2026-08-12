@@ -36,7 +36,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       const doc = await AppDataModel.findOneAndUpdate(
         { _key: 'main' },
         { $set: { data: incoming, updatedAt } },
-        { upsert: true, new: true, lean: true }
+        { upsert: true, returnDocument: 'after', lean: true }
       );
       return res.status(200).json({ data: doc!.data, updatedAt: doc!.updatedAt });
     }
